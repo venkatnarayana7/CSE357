@@ -1,0 +1,108 @@
+/* Project: React E-Commerce Store
+   Description: A modular React project for an e-commerce store.
+   Author: Venkata Narayana */
+
+// Install dependencies: 
+// npm install react-router-dom axios
+
+// File: src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
+import App from "./App";
+import "./styles/global.css";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <Router>
+    <App />
+  </Router>
+);
+
+// File: src/App.js
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import ProductPage from "./pages/ProductPage";
+import Cart from "./pages/Cart";
+import Navbar from "./components/Navbar";
+
+function App() {
+  return (
+    <div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/cart" element={<Cart />} />
+      </Routes>
+    </div>
+  );
+}
+export default App;
+
+// File: src/components/Navbar.js
+import React from "react";
+import { Link } from "react-router-dom";
+
+function Navbar() {
+  return (
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/cart">Cart</Link>
+    </nav>
+  );
+}
+export default Navbar;
+
+// File: src/pages/Home.js
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+function Home() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://fakestoreapi.com/products").then((res) => setProducts(res.data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Products</h1>
+      {products.map((product) => (
+        <div key={product.id}>
+          <h2>{product.title}</h2>
+          <Link to={`/product/${product.id}`}>View Details</Link>
+        </div>
+      ))}
+    </div>
+  );
+}
+export default Home;
+
+// File: src/pages/ProductPage.js
+import React from "react";
+import { useParams } from "react-router-dom";
+
+function ProductPage() {
+  let { id } = useParams();
+  return <h1>Product Details for {id}</h1>;
+}
+export default ProductPage;
+
+// File: src/pages/Cart.js
+import React from "react";
+function Cart() {
+  return <h1>Your Cart</h1>;
+}
+export default Cart;
+
+// File: src/styles/global.css
+body {
+  font-family: Arial, sans-serif;
+}
+nav {
+  display: flex;
+  gap: 10px;
+}
